@@ -1,0 +1,8 @@
+﻿  Shapes.cpp
+c:\users\benjamin.moore\desktop\terrainworking\tinyobj\tinyobj\tinyobj\grahpictut1\graphictut\src\shapes.cpp(6): warning C4551: function call missing argument list
+  PlayerController.cpp
+  main.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  GraphicTut.vcxproj -> C:\Users\benjamin.moore\Desktop\TerrainWorking\TinyObj\TinyObj\TinyObj\GrahpicTut1\Debug\GraphicTut.exe
+  GraphicTut.vcxproj -> C:\Users\benjamin.moore\Desktop\TerrainWorking\TinyObj\TinyObj\TinyObj\GrahpicTut1\Debug\GraphicTut.pdb (Partial PDB)
