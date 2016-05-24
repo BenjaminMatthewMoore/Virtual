@@ -67,7 +67,7 @@ void TerrainGen::GenTerrain(int dimensions)
 	loadTextures(m_grassTexture);
 	loadTextures(m_snowTexture);
 
-	m_grid.GenerateGrid(dimensions, dimensions);
+	m_grid.startUp(dimensions, dimensions);
 	m_dimensions = dimensions;
 	m_perlinData = new float[m_dimensions * m_dimensions];
 	scale = (1.0f / m_dimensions) * 4.f;
