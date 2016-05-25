@@ -1,7 +1,7 @@
 #pragma once
-#include  "characterkinematic/PxController.h"
+#include <PxPhysicsAPI.h>
 using namespace physx;
-class ControllerHitReport : PxUserControllerHitReport
+class ControllerHitReport : public PxUserControllerHitReport
 {
 public:
 	ControllerHitReport();

@@ -8,6 +8,9 @@ public:
 	~PlayerController();
 
 private:
+	bool onGround;
+	float movementSpeed;
+	float roatationSpeed;
 
 };
 
