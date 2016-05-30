@@ -1,9 +1,5 @@
 #include "ControllerHitReport.h"
 
-ControllerHitReport::ControllerHitReport()
-{
-}
-
 ControllerHitReport::~ControllerHitReport()
 {
 }

@@ -4,7 +4,6 @@ using namespace physx;
 class ControllerHitReport : public PxUserControllerHitReport
 {
 public:
-	ControllerHitReport();
 	~ControllerHitReport();
 
 	///overload
