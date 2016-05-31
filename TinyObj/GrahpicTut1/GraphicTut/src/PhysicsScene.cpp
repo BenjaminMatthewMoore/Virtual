@@ -6,6 +6,8 @@
 #include <glm\glm.hpp>
 #include <glm\ext.hpp>
 #include <PxPhysicsAPI.h>
+#include "ControllerHitReport.h"
+#include "PlayerController.h"
 
 using namespace physx;
 
@@ -33,8 +35,20 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::SetUpPhysx()
 {
-	PxAllocatorCallback *myCallback = new MemoryAllocator();
-	
+	PxAllocatorCallback *callback = new MemoryAllocator();
+	m_physicsFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *callback, mDefaultErrorCallback);
+	m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_physicsFoundation, PxTolerancesScale());
+	PxInitExtensions(*m_physics);
+	m_physicsMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.5f);
+	PxSceneDesc sceneDesc(m_physics->getTolerancesScale());
+	sceneDesc.gravity = PxVec3(0, -10.f, 0);
+	sceneDesc.filterShader = &physx::PxDefaultSimulationFilterShader;
+	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
+	m_physicsScene = m_physics->createScene(sceneDesc);
+
+	hitReport = new ControllerHitReport();
+
+
 }
 
 void PhysicsScene::DrawScene()
@@ -70,6 +84,19 @@ void PhysicsScene::DrawScene()
 		}
 	}
 }
+
+void PhysicsScene::Update(float a_deltaTime)
+{
+	if (a_deltaTime <= 0)
+	{
+		return;
+	}
+	m_physicsScene->simulate(a_deltaTime);
+	while (m_physicsScene->fetchResults() == false)
+	{
+	}
+}
+
 
 	void PhysicsScene::AddWidget(PxShape* shape, PxRigidActor* actor, glm::vec4 geo_color)
 	{

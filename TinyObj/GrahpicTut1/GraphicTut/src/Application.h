@@ -11,13 +11,14 @@
 #include "Grid.h"
 #include "Window.h"
 #include "tiny_obj_loader.h"
-#include "ImportOBJ.h"
-#include "Project.h"
-
-#include "TerrainGen.h"
 #include <iostream>
-#include "RenderTargets.h"
-#include "Particles.h"
+
+class ImportOBJ;
+class Project;
+class TerrainGen;
+class RenderTargets;
+class ParticleEmitter;
+//class PhysicsScene;
 
 class Application
 {
@@ -46,5 +47,6 @@ private:
 	float deltaTime;
 	float counter;
 	float onceOnly;
+//	PhysicsScene* physicsScene;
 };
 

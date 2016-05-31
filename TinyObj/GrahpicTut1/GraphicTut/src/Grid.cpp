@@ -31,7 +31,7 @@ Grid::Grid()
 							FragColor = texture(diffuse, uv).rrrr* vec4((DirectionalLightColour*d), 1);}";
 
 	m_program.create(vertexShader, fragShader);
-	
+
 }
 
 
@@ -41,6 +41,8 @@ Grid::~Grid()
 
 void Grid::GenerateGrid(unsigned int row, unsigned int cols)
 {
+	m_row = row;
+	m_col = cols;
 	m_vertCount = row * cols;
 	m_aoVertices = new Vertex[m_vertCount];
 	for (unsigned int r = 0; r < row; r++)

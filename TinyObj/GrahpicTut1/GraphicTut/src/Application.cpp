@@ -1,6 +1,25 @@
 #include "Application.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#include "gl_core_4_4.h"
+#include <cstdio>
+#include <GLFW/glfw3.h>
+#include "Gizmos.h"
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+#include "glm/gtx/transform.hpp"
+#include "Camera.h"
+#include "Grid.h"
+#include "Window.h"
+#include "tiny_obj_loader.h"
+#include "ImportOBJ.h"
+#include "Project.h"
+
+#include "TerrainGen.h"
+#include <iostream>
+#include "RenderTargets.h"
+#include "Particles.h"
+#include "PhysicsScene.h"
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -125,6 +144,7 @@ void Application::Startup()
 	terrain	= new TerrainGen;
 	projection = new RenderTargets;
 	staff = new ImportOBJ();
+	//01..physicsScene = new PhysicsScene;
 	m_emitter = new ParticleEmitter();
 	//ImportOBJ* dragon = new ImportOBJ;
 	m_emitter->initalise(1000, 500, 0.1f, 1.0f, 1, 5, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
@@ -149,9 +169,6 @@ void Application::Update()
 		counter += deltaTime;
 		camera->Update(deltaTime);
 		printOpenGLError();
-
-
-
 		//terrain->WaterRiseFall(deltaTime);
 		//if (onceOnly == 0)
 		//{
