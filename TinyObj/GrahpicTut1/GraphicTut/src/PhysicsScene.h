@@ -17,28 +17,30 @@ public:
 	void DrawScene();
 
 	void Update(float a_deltaTime);
-
-	
-	
-	
-	
 	
 
-private:
-	void AddWidget(physx::PxShape* shape, physx::PxRigidActor* actor, glm::vec4 geo_color);
-	physx::PxScene* m_pScene;
-	PlayerController* m_playerController;
-	ControllerHitReport* hitReport;
-	float m_gravity;
+	
+	
+	
 	physx::PxFoundation* m_physicsFoundation;
 	physx::PxPhysics* m_physics;
 	physx::PxScene* m_physicsScene;
 	physx::PxMaterial* m_physicsMaterial;
 	physx::PxMaterial* m_boxMaterial;
 	physx::PxCooking* m_physicsCooker;
+	
+
+private:
+	void AddWidget(physx::PxShape* shape, physx::PxRigidActor* actor, glm::vec4 geo_color);
+	physx::PxScene* m_pScene;
+	PlayerController* m_playerController;
+	ControllerHitReport* m_hitReport;
+	float m_gravity;
+
 
 	physx::PxDefaultErrorCallback mDefaultErrorCallback;
 	physx::PxDefaultAllocator mDefaultAllocatorCallback;
+
 
 };
 

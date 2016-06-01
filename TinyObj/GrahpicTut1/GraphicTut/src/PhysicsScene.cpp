@@ -46,9 +46,6 @@ void PhysicsScene::SetUpPhysx()
 	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
 	m_physicsScene = m_physics->createScene(sceneDesc);
 
-	hitReport = new ControllerHitReport();
-
-
 }
 
 void PhysicsScene::DrawScene()
@@ -139,4 +136,5 @@ void PhysicsScene::Update(float a_deltaTime)
 		} break;
 		}
 	}
+
 
