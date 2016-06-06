@@ -85,7 +85,7 @@ void RenderTargets::Draw(mat4 cameraView, TerrainGen terrain)
 	glClearColor(0.75f, 0.75f, 0.75f, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Gizmos::draw(cameraView);
+	
 	terrain.Draw(cameraView);
 	glClearColor(0.25f, 0.25f, 0.25f, 1);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

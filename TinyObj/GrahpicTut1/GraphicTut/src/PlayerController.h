@@ -1,8 +1,13 @@
 #pragma once
 #include "PxBroadPhase.h"
+#include <geometry\PxCapsuleGeometry.h>
+#include <characterkinematic\PxExtended.h>
 namespace physx {
 	class PxController;
 	class PxControllerManager;
+	class PxCapsuleGeometry;
+	struct PxExtendedVec3;
+	class PxRigidDynamic;
 }
 class ControllerHitReport;
 class PhysicsScene;
@@ -11,7 +16,7 @@ class PlayerController
 {
 public:
 
-	PlayerController(physx::PxScene& physicScene);
+	PlayerController(PhysicsScene* physicScene);
 	~PlayerController();
 
 private:
@@ -24,7 +29,7 @@ private:
 
 	physx::PxController* m_playerController;
 	physx::PxControllerManager* m_characterManager;
-	PhysicsScene* m_PhysicsScene; 
+	//PhysicsScene* m_PhysicsScene; 
 	ControllerHitReport* m_hitReport;
 	physx::PxMaterial* m_playerMaterial;
 	physx::PxExtendedVec3 startPosition;

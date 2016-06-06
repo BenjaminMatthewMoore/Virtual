@@ -18,6 +18,7 @@ class Project;
 class TerrainGen;
 class RenderTargets;
 class ParticleEmitter;
+class PhysicsScene;
 //class PhysicsScene;
 
 class Application
@@ -34,6 +35,7 @@ public:
 	Window* windowView;
 private:
 
+	PhysicsScene* physicsScene;
 	Camera* camera;
 		//Grid* grid = new Grid;
 	TerrainGen* terrain;

@@ -8,6 +8,7 @@
 #include <PxPhysicsAPI.h>
 #include "ControllerHitReport.h"
 #include "PlayerController.h"
+#include "TerrainGen.h"
 
 using namespace physx;
 
@@ -15,16 +16,17 @@ class MemoryAllocator : public PxAllocatorCallback
 {
 public:
 	virtual ~MemoryAllocator() {}
-	virtual void* allocate(size_t size, const char* typeName, const char* filename, int line)
+	virtual void* allocate(size_t size, const char* typeName, const char* filename, int line) override
 	{
 		void* pointer = _aligned_malloc(size, 16);
 		return pointer;
 	}
-	virtual void deallocate(void* ptr)
+	virtual void deallocate(void* ptr) override
 	{
 		_aligned_free(ptr);
 	}
 };
+
 PhysicsScene::PhysicsScene()
 {
 }
@@ -35,8 +37,9 @@ PhysicsScene::~PhysicsScene()
 
 void PhysicsScene::SetUpPhysx()
 {
-	PxAllocatorCallback *callback = new MemoryAllocator();
-	m_physicsFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *callback, mDefaultErrorCallback);
+	mDefaultAllocatorCallback = new MemoryAllocator();
+	mDefaultErrorCallback = new PxDefaultErrorCallback();
+	m_physicsFoundation = PxCreateFoundation(PX_PHYSICS_VERSION, *mDefaultAllocatorCallback, *mDefaultErrorCallback);
 	m_physics = PxCreatePhysics(PX_PHYSICS_VERSION, *m_physicsFoundation, PxTolerancesScale());
 	PxInitExtensions(*m_physics);
 	m_physicsMaterial = m_physics->createMaterial(0.5f, 0.5f, 0.5f);
@@ -45,6 +48,11 @@ void PhysicsScene::SetUpPhysx()
 	sceneDesc.filterShader = &physx::PxDefaultSimulationFilterShader;
 	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
 	m_physicsScene = m_physics->createScene(sceneDesc);
+//	m_playerController = new PlayerController(this);
+	PxBoxGeometry box(2, 2, 2);
+	PxTransform transform(PxVec3(5, 100, 5));
+	PxRigidDynamic* dynamicActor = PxCreateDynamic(*m_physics, transform, box, *m_physicsMaterial, 10.f);
+	m_physicsScene->addActor(*dynamicActor);
 
 }
 
@@ -52,9 +60,9 @@ void PhysicsScene::DrawScene()
 {
 
 	PxActorTypeFlags desiredTypes = PxActorTypeFlag::eRIGID_STATIC | PxActorTypeFlag::eRIGID_DYNAMIC;
-	PxU32 actor_count = m_pScene->getNbActors(desiredTypes);
+	PxU32 actor_count = m_physicsScene->getNbActors(desiredTypes);
 	PxActor** actor_list = new PxActor*[actor_count];
-	m_pScene->getActors(desiredTypes, actor_list, actor_count);
+	m_physicsScene->getActors(desiredTypes, actor_list, actor_count);
 
 	glm::vec4 geo_color(1, 0, 0, 1);
 	for (int actor_index = 0;
@@ -137,4 +145,40 @@ void PhysicsScene::Update(float a_deltaTime)
 		}
 	}
 
+	void PhysicsScene::CreateHeightMap(TerrainGen terrain)
+	{
+		
+		PxTransform transform(PxVec3(0, 0, 0));
+		
+		PxHeightFieldDesc hfDesc;
+		hfDesc.format = PxHeightFieldFormat::eS16_TM;
+		hfDesc.nbColumns = terrain.m_dimensions;
+		hfDesc.nbRows = terrain.m_dimensions;
+		int *perlinAdjusted = new int[terrain.m_dimensions*terrain.m_dimensions];
+		for (int i = 0; i < terrain.m_dimensions*terrain.m_dimensions; i++)
+		{
+			perlinAdjusted[i] = static_cast<int>((terrain.m_perlinData[i]) * 25);
+		}
+		hfDesc.samples.data = perlinAdjusted;
+		hfDesc.samples.stride = sizeof(PxHeightFieldSample);
+		hfDesc.thickness = -100.0f;
 
+		PxHeightField *aHeightField = m_physics->createHeightField(hfDesc);
+		PxHeightFieldGeometry hfGeom(aHeightField, PxMeshGeometryFlags(), 1, 1, 1);
+		PxTransform pose = PxTransform(PxVec3(0.0f, 0, 0.0f));
+		//PxShape* heightmap = m_pXActor->createShape(hfGeom, *m_physicsMaterial, pose);
+
+		m_pXActor = PxCreateStatic(*m_physics, transform, hfGeom,*m_physicsMaterial);
+		m_physicsScene->addActor(*m_pXActor);
+	}
+
+	void PhysicsScene::setUpVisualDebugger()
+	{
+		if (m_physics->getPvdConnectionManager() == NULL)
+			return;
+		const char* pvd_host_ip = "127.0.0.1";
+		int port = 5425;
+		unsigned int timeout = 100;
+		PxVisualDebuggerConnectionFlags connectionFlags = PxVisualDebuggerExt::getAllConnectionFlags();
+		auto theConnection = PxVisualDebuggerExt::createConnection(m_physics->getPvdConnectionManager(), pvd_host_ip, port, timeout, connectionFlags);
+	}

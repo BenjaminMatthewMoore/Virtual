@@ -6,6 +6,8 @@
 #include <glm\ext.hpp>
 
 class PlayerController;
+class TerrainGen;
+
 class PhysicsScene
 {
 public:
@@ -18,7 +20,8 @@ public:
 
 	void Update(float a_deltaTime);
 	
-
+	void CreateHeightMap(TerrainGen terrain);
+	void setUpVisualDebugger();
 	
 	
 	
@@ -28,19 +31,21 @@ public:
 	physx::PxMaterial* m_physicsMaterial;
 	physx::PxMaterial* m_boxMaterial;
 	physx::PxCooking* m_physicsCooker;
+	void AddWidget(physx::PxShape* shape, physx::PxRigidActor* actor, glm::vec4 geo_color);
 	
 
 private:
-	void AddWidget(physx::PxShape* shape, physx::PxRigidActor* actor, glm::vec4 geo_color);
-	physx::PxScene* m_pScene;
+	
+	//physx::PxScene* m_pScene;
 	PlayerController* m_playerController;
 	ControllerHitReport* m_hitReport;
 	float m_gravity;
 
 
-	physx::PxDefaultErrorCallback mDefaultErrorCallback;
-	physx::PxDefaultAllocator mDefaultAllocatorCallback;
-
+	physx::PxDefaultErrorCallback* mDefaultErrorCallback;
+	physx::PxAllocatorCallback* mDefaultAllocatorCallback;
+	physx::PxSimulationFilterShader m_DefualtFilterShader = PxDefaultSimulationFilterShader;
+	physx::PxRigidActor* m_pXActor;
 
 };
 

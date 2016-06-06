@@ -1,13 +1,3 @@
-﻿  TerrainGen.cpp
-c:\users\benjamin.moore\documents\virtual\tinyobj\grahpictut1\graphictut\src\terraingen.cpp(75): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\benjamin.moore\documents\virtual\tinyobj\grahpictut1\graphictut\src\terraingen.cpp(196): warning C4305: '+=': truncation from 'double' to 'float'
-c:\users\benjamin.moore\documents\virtual\tinyobj\grahpictut1\graphictut\src\terraingen.cpp(207): warning C4305: '-=': truncation from 'double' to 'float'
-  Grid.cpp
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  main.cpp
-  RenderTargets.cpp
-  Project.cpp
-  Application.cpp
+﻿  PhysicsScene.cpp
   GraphicTut.vcxproj -> C:\Users\benjamin.moore\Documents\Virtual\TinyObj\GrahpicTut1\Debug\GraphicTut.exe
   GraphicTut.vcxproj -> C:\Users\benjamin.moore\Documents\Virtual\TinyObj\GrahpicTut1\Debug\GraphicTut.pdb (Partial PDB)

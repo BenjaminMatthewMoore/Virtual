@@ -127,6 +127,7 @@ void Application::Startup()
 	windowView = new Window;
 	lightsDirection = vec3(0.f, 0.f, 1.f);
 	lightColour = vec3(1.f, 1.f, 1.f);
+	
 
 
 	windowView->CreateWindowView();
@@ -141,7 +142,12 @@ void Application::Startup()
 
 	camera = new Camera(vec3(10, 100, 10), vec3(0), vec3(0, 1, 0), glm::pi<float>() * 0.25f, windowView->m_window);
 	//Grid* grid = new Grid;
+	physicsScene = new PhysicsScene;
+	physicsScene->SetUpPhysx();
+	physicsScene->setUpVisualDebugger();
 	terrain	= new TerrainGen;
+	terrain->GenTerrain(128);
+	physicsScene->CreateHeightMap(*terrain);
 	projection = new RenderTargets;
 	staff = new ImportOBJ();
 	//01..physicsScene = new PhysicsScene;
@@ -149,7 +155,7 @@ void Application::Startup()
 	//ImportOBJ* dragon = new ImportOBJ;
 	m_emitter->initalise(1000, 500, 0.1f, 1.0f, 1, 5, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
 
-	terrain->GenTerrain(128);
+	
 	projection->genBuffer();
 	projection->genTex();
 	Gizmos::create();
@@ -162,39 +168,43 @@ void Application::Startup()
 
 void Application::Update()
 {
-
-		
-		deltaTime = (float)glfwGetTime() - lastFrameTime;
-		lastFrameTime = (float)glfwGetTime();
-		counter += deltaTime;
-		camera->Update(deltaTime);
-		printOpenGLError();
-		//terrain->WaterRiseFall(deltaTime);
-		//if (onceOnly == 0)
-		//{
-		//	terrain->MountainTest();
-		//	onceOnly = 1;
-		//}
-
-		//if (counter > .0001f)
-		//{
-		//	terrain->FlattenTerrain();
-		//	counter = 0;
-		//}
-
-		//m_emitter->update(deltaTime, camera->GetProjectionView());
+	deltaTime = (float)glfwGetTime() - lastFrameTime;
+	physicsScene->Update(deltaTime);
+	lastFrameTime = (float)glfwGetTime();
+	counter += deltaTime;
+	camera->Update(deltaTime);
+	printOpenGLError();
+	//terrain->WaterRiseFall(deltaTime);
+	//if (onceOnly == 0)
+	//{
+	//	terrain->MountainTest();
+	//	onceOnly = 1;
+	//}
+	
+	//if (counter > .0001f)
+	//{
+	//	terrain->FlattenTerrain();
+	//	counter = 0;
+	//}
+	
+	//m_emitter->update(deltaTime, camera->GetProjectionView());
 }
 
 void Application::Draw()
 {
+	Gizmos::clear();
 	camera->Update(deltaTime);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	projection->Draw(camera->GetProjectionView(), *terrain);
+	
 	//staff->Render(camera, lightsDirection, lightColour);
 	terrain->Draw(camera->GetProjectionView());
+	physicsScene->DrawScene();
+	Gizmos::draw(camera->GetProjectionView());
 	counter = 0;
 	glfwSwapBuffers(windowView->m_window);
 	glfwPollEvents();
+	//physicsScene->DrawScene();
 
 	//grid->SetProgram(camera->GetProjectionView(), lightsDirection, lightColour);
 	//grid->Draw();
@@ -204,6 +214,7 @@ void Application::Draw()
 	//dragon->Render(camera, lightsDirection, lightColour);
 
 	//m_emitter->draw(camera->GetProjectionView());
+	
 }
 
 void Application::Shutdown()

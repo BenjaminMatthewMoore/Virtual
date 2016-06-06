@@ -2,17 +2,18 @@
 #include "ControllerHitReport.h"
 #include <PxPhysicsAPI.h>
 #include "PhysicsScene.h"
+#include "Gizmos.h"
 using namespace physx;
 
-PlayerController::PlayerController(PxScene& physicScene)
+PlayerController::PlayerController(PhysicsScene* physicScene)
 {
 	m_hitReport = new ControllerHitReport();
-	m_characterManager = PxCreateControllerManager(physicScene);
+	m_characterManager = PxCreateControllerManager(*physicScene->m_physicsScene);
 	PxCapsuleControllerDesc desc;
 	desc.height = 1.6f;
 	desc.radius = 0.4f;
 	desc.position.set(0, 0, 0);
-	desc.material = m_playerMaterial;
+	desc.material = physicScene->m_physicsMaterial;
 	desc.reportCallback = m_hitReport;
 	desc.density = 10;
 	m_playerController = m_characterManager->createController(desc);
@@ -23,7 +24,9 @@ PlayerController::PlayerController(PxScene& physicScene)
 	m_hitReport->clearPlayerContactNormal();
 	capsule.radius = 10;
 	capsule.halfHeight = 5;
-	//m_playerCapsule = PxCreateDynamic(physicScene., PxTransform(0,0,0), capsule, physicScene.)
+	m_playerCapsule = PxCreateDynamic(*physicScene->m_physics, PxTransform(0, 0, 0), capsule, *physicScene->m_physicsMaterial, (PxReal)desc.density);
+	physicScene->m_physicsScene->addActor(*m_playerCapsule);
+
 }
 
 PlayerController::~PlayerController()

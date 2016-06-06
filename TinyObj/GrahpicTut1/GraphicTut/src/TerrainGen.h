@@ -24,6 +24,8 @@ public:
 	TerrainGen();
 	~TerrainGen();
 
+	int m_dimensions;
+	float *m_perlinData;
 	void Draw(mat4 cameraView);
 	void GenTerrain(int dimensions);
 	void FlattenTerrain();
@@ -62,8 +64,8 @@ public:
 	}
 
 private:
-	float *m_perlinData;
-	int m_dimensions;
+	
+	
 	float scale;
 	unsigned int m_perlinTexture;
 	Texture	m_waterTexture;
