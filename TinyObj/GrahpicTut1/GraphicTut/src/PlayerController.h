@@ -11,6 +11,7 @@ namespace physx {
 }
 class ControllerHitReport;
 class PhysicsScene;
+class Window;
 
 class PlayerController
 {
@@ -18,7 +19,7 @@ public:
 
 	PlayerController(PhysicsScene* physicScene);
 	~PlayerController();
-
+	void Update(float deltaTime, Window* activeWindow);
 private:
 	bool onGround;
 	float movementSpeed;

@@ -14,7 +14,7 @@ TerrainGen::TerrainGen()
 							void main() { \
 							vec4 pos = Position;\
 							height =  texture(perlinTexture, TexCoord).r;\
-							pos.y += height * 25;\
+							pos.y += height * 5;\
 							gl_Position = ProjectionView *pos;\
 							vTexCoord = TexCoord;}";
 

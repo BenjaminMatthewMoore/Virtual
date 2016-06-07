@@ -9,6 +9,8 @@
 #include "ControllerHitReport.h"
 #include "PlayerController.h"
 #include "TerrainGen.h"
+#include "Camera.h"
+#include "Window.h"
 
 using namespace physx;
 
@@ -35,7 +37,7 @@ PhysicsScene::~PhysicsScene()
 {
 }
 
-void PhysicsScene::SetUpPhysx()
+void PhysicsScene::SetUpPhysx(float TerrainSize)
 {
 	mDefaultAllocatorCallback = new MemoryAllocator();
 	mDefaultErrorCallback = new PxDefaultErrorCallback();
@@ -48,12 +50,31 @@ void PhysicsScene::SetUpPhysx()
 	sceneDesc.filterShader = &physx::PxDefaultSimulationFilterShader;
 	sceneDesc.cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
 	m_physicsScene = m_physics->createScene(sceneDesc);
-//	m_playerController = new PlayerController(this);
-	PxBoxGeometry box(2, 2, 2);
-	PxTransform transform(PxVec3(5, 100, 5));
-	PxRigidDynamic* dynamicActor = PxCreateDynamic(*m_physics, transform, box, *m_physicsMaterial, 10.f);
-	m_physicsScene->addActor(*dynamicActor);
+	m_playerController = new PlayerController(this);
+	PxBoxGeometry box(5, 5, 5);
+	PxTransform transform(PxVec3(20, 100, 50));
+	PxRigidDynamic* boxActor = PxCreateDynamic(*m_physics, transform, box, *m_physicsMaterial, 10.f);
+	m_physicsScene->addActor(*boxActor);
+	//copied
+	PxTransform poseOriginLeft = PxTransform(PxVec3(0.0f, 0.0f, 0.0f), PxQuat(0,PxVec3(0.f, 0.0f, 0.0f)));
+	PxRigidStatic* planeLeft = PxCreateStatic(*m_physics, poseOriginLeft, PxPlaneGeometry(),*m_physicsMaterial);
+	m_physicsScene->addActor(*planeLeft);
 
+	PxTransform poseFarsideRight = PxTransform(PxVec3(TerrainSize, 0.0f, 0.0f), PxQuat(PxHalfPi*2, PxVec3(0.0f, 1.0f, 0.0f)));
+	PxRigidStatic* planeRight = PxCreateStatic(*m_physics, poseFarsideRight, PxPlaneGeometry(), *m_physicsMaterial);
+	m_physicsScene->addActor(*planeRight);
+
+	PxTransform poseOriginFront = PxTransform(PxVec3(0.0f, 0.0f, 0.0f), PxQuat(PxHalfPi*3.0f, PxVec3(0.0f, 1.0f, 0.0f)));
+	PxRigidStatic* planeFarSide = PxCreateStatic(*m_physics, poseOriginFront, PxPlaneGeometry(), *m_physicsMaterial);
+	m_physicsScene->addActor(*planeFarSide);
+
+	PxTransform poseNearSide = PxTransform(PxVec3(0.0f, 0.0f, TerrainSize), PxQuat(PxHalfPi*1.0f, PxVec3(0.0f, 1.0f, 0.0f)));
+	PxRigidStatic* planeNearSide = PxCreateStatic(*m_physics, poseNearSide, PxPlaneGeometry(), *m_physicsMaterial);
+	m_physicsScene->addActor(*planeNearSide);
+
+	PxTransform baseline = PxTransform(PxVec3(0.0f, 0, 0.0f), PxQuat(PxHalfPi*1.0f, PxVec3(0.0f, 0.0f, 1.0f)));
+	PxRigidStatic* planeBase = PxCreateStatic(*m_physics, baseline, PxPlaneGeometry(), *m_physicsMaterial);
+	m_physicsScene->addActor(*planeBase);
 }
 
 void PhysicsScene::DrawScene()
@@ -90,7 +111,7 @@ void PhysicsScene::DrawScene()
 	}
 }
 
-void PhysicsScene::Update(float a_deltaTime)
+void PhysicsScene::Update(float a_deltaTime, Window* window)
 {
 	if (a_deltaTime <= 0)
 	{
@@ -100,6 +121,7 @@ void PhysicsScene::Update(float a_deltaTime)
 	while (m_physicsScene->fetchResults() == false)
 	{
 	}
+	m_playerController->Update(a_deltaTime, window);
 }
 
 
@@ -130,7 +152,7 @@ void PhysicsScene::Update(float a_deltaTime)
 		{
 			PxCapsuleGeometry geo;
 			shape->getCapsuleGeometry(geo);
-			Gizmos::addCapsule(actor_position, geo.halfHeight * 2, geo.radius, 16, 16, geo_color, &rot);
+			Gizmos::addCapsule(actor_position, geo.halfHeight * 4, geo.radius, 16, 16, geo_color, &rot);
 		} break;
 		case (PxGeometryType::eSPHERE) :
 		{
@@ -157,7 +179,7 @@ void PhysicsScene::Update(float a_deltaTime)
 		int *perlinAdjusted = new int[terrain.m_dimensions*terrain.m_dimensions];
 		for (int i = 0; i < terrain.m_dimensions*terrain.m_dimensions; i++)
 		{
-			perlinAdjusted[i] = static_cast<int>((terrain.m_perlinData[i]) * 25);
+			perlinAdjusted[i] = static_cast<int>((terrain.m_perlinData[i]) * 5);
 		}
 		hfDesc.samples.data = perlinAdjusted;
 		hfDesc.samples.stride = sizeof(PxHeightFieldSample);
@@ -181,4 +203,25 @@ void PhysicsScene::Update(float a_deltaTime)
 		unsigned int timeout = 100;
 		PxVisualDebuggerConnectionFlags connectionFlags = PxVisualDebuggerExt::getAllConnectionFlags();
 		auto theConnection = PxVisualDebuggerExt::createConnection(m_physics->getPvdConnectionManager(), pvd_host_ip, port, timeout, connectionFlags);
+	}
+
+	void PhysicsScene::ShootCubes(Camera* camera)
+	{
+		//Transform
+		vec3 cam_pos = glm::vec3 (camera->worldTransform[3]);
+		vec3 box_vel = glm::vec3(-camera->worldTransform[2] * 20.f);
+		PxTransform box_transform(PxVec3(cam_pos.x, cam_pos.y, cam_pos.z));
+		//Geometry
+		PxSphereGeometry sphere(5.f);
+		//Density
+		float density = 10;
+		PxRigidDynamic* new_actor = PxCreateDynamic(*m_physics,
+			box_transform,
+			sphere,
+			*m_physicsMaterial,
+			density);
+		glm::vec3 direction(-camera->worldTransform[2]);
+		physx::PxVec3 velocity = physx::PxVec3(direction.x, direction.y, direction.z) * 10;
+		new_actor->setLinearVelocity(velocity, true);
+		m_physicsScene->addActor(*new_actor);
 	}

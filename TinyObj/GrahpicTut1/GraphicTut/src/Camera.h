@@ -20,13 +20,15 @@ public:
 	mat4 MoveCamera();
 	mat4 GetProjectionView();
 	void Update(float deltaTime);
+	GLFWwindow* p_window;
+	mat4 worldTransform;
 
 private:
 	mat4 view;
 	mat4 projection;
-	mat4 worldTransform;
+	float speed;
 	mat4 viewTransform;
-	GLFWwindow* p_window;
+	
 
 	
 };

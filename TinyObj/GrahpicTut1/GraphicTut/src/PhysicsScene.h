@@ -7,23 +7,24 @@
 
 class PlayerController;
 class TerrainGen;
-
+class Camera;
+class Window;
 class PhysicsScene
 {
 public:
 	PhysicsScene();
 	~PhysicsScene();
 
-	void SetUpPhysx();
+	void SetUpPhysx(float TerrainSize);
 	
 	void DrawScene();
 
-	void Update(float a_deltaTime);
+	void Update(float a_deltaTime, Window* window);
 	
 	void CreateHeightMap(TerrainGen terrain);
 	void setUpVisualDebugger();
 	
-	
+	void ShootCubes(Camera* camera);
 	
 	physx::PxFoundation* m_physicsFoundation;
 	physx::PxPhysics* m_physics;

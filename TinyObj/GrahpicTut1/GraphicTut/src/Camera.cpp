@@ -8,6 +8,7 @@ Camera::Camera(vec3 pos, vec3 lookat, vec3 up, float fov, GLFWwindow* currentWin
 	projection = glm::perspective(fov, 16 / 9.f, 0.1f, 1000.f);
 	worldTransform = inverse(view);
 	p_window = currentWindow;
+	speed = 20;
 }
 
 Camera::~Camera()
@@ -35,27 +36,27 @@ void Camera::Update(float deltaTime)
 {	
 	if (glfwGetKey(p_window, GLFW_KEY_RIGHT))
 	{
-		worldTransform = glm::translate(worldTransform, (vec3(50, 0, 0)*deltaTime));
+		worldTransform = glm::translate(worldTransform, (vec3(speed, 0, 0)*deltaTime));
 	}
 	if (glfwGetKey(p_window, GLFW_KEY_LEFT))
 	{
-		worldTransform = glm::translate(worldTransform, (vec3(-50, 0, 0)*deltaTime));
+		worldTransform = glm::translate(worldTransform, (vec3(-speed, 0, 0)*deltaTime));
 	}
 	if (glfwGetKey(p_window, GLFW_KEY_UP))
 	{
-		worldTransform = glm::translate(worldTransform, (vec3(0, 50, 0)*deltaTime));
+		worldTransform = glm::translate(worldTransform, (vec3(0, speed, 0)*deltaTime));
 	}
 	if (glfwGetKey(p_window, GLFW_KEY_DOWN))
 	{
-		worldTransform = glm::translate(worldTransform, (vec3(0, -50, 0)*deltaTime));
+		worldTransform = glm::translate(worldTransform, (vec3(0, -speed, 0)*deltaTime));
 	}
 	if (glfwGetKey(p_window, GLFW_KEY_S))
 	{
-		worldTransform = glm::translate(worldTransform, (vec3(0, 0, 50)*deltaTime));
+		worldTransform = glm::translate(worldTransform, (vec3(0, 0, speed)*deltaTime));
 	}
 	if (glfwGetKey(p_window, GLFW_KEY_W))
 	{
-		worldTransform = glm::translate(worldTransform, (vec3(0, 0, -50)*deltaTime));
+		worldTransform = glm::translate(worldTransform, (vec3(0, 0, -speed)*deltaTime));
 	}
 	if (glfwGetKey(p_window, GLFW_KEY_A))
 	{

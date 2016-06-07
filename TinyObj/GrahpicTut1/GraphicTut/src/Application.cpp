@@ -24,6 +24,8 @@ using glm::vec3;
 using glm::vec4;
 using glm::mat4;
 using namespace std;
+bool doThis;
+int terrainSize;
 
 void APIENTRY openglCallbackFunction(GLenum source,
 	GLenum type,
@@ -127,7 +129,7 @@ void Application::Startup()
 	windowView = new Window;
 	lightsDirection = vec3(0.f, 0.f, 1.f);
 	lightColour = vec3(1.f, 1.f, 1.f);
-	
+	terrainSize = 64;
 
 
 	windowView->CreateWindowView();
@@ -143,14 +145,13 @@ void Application::Startup()
 	camera = new Camera(vec3(10, 100, 10), vec3(0), vec3(0, 1, 0), glm::pi<float>() * 0.25f, windowView->m_window);
 	//Grid* grid = new Grid;
 	physicsScene = new PhysicsScene;
-	physicsScene->SetUpPhysx();
+	physicsScene->SetUpPhysx((float)terrainSize);
 	physicsScene->setUpVisualDebugger();
 	terrain	= new TerrainGen;
-	terrain->GenTerrain(128);
+	terrain->GenTerrain(terrainSize);
 	physicsScene->CreateHeightMap(*terrain);
 	projection = new RenderTargets;
 	staff = new ImportOBJ();
-	//01..physicsScene = new PhysicsScene;
 	m_emitter = new ParticleEmitter();
 	//ImportOBJ* dragon = new ImportOBJ;
 	m_emitter->initalise(1000, 500, 0.1f, 1.0f, 1, 5, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
@@ -164,16 +165,30 @@ void Application::Startup()
 	counter = 0;
 	onceOnly = 0; 
 	lastFrameTime = (float)glfwGetTime();
+	doThis = true;
 }
 
 void Application::Update()
 {
 	deltaTime = (float)glfwGetTime() - lastFrameTime;
-	physicsScene->Update(deltaTime);
+	physicsScene->Update(deltaTime, windowView);
 	lastFrameTime = (float)glfwGetTime();
 	counter += deltaTime;
 	camera->Update(deltaTime);
 	printOpenGLError();
+
+	int state = (glfwGetKey(camera->p_window, GLFW_KEY_SPACE));
+	if (state == GLFW_PRESS && doThis)
+	{
+		doThis = false;
+		physicsScene->ShootCubes(camera);
+		
+	}
+	if (state == GLFW_RELEASE)
+	{
+		doThis = true;
+	}
+
 	//terrain->WaterRiseFall(deltaTime);
 	//if (onceOnly == 0)
 	//{
