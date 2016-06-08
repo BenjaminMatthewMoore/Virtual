@@ -17,7 +17,7 @@ class ImportOBJ;
 class Project;
 class TerrainGen;
 class RenderTargets;
-class ParticleEmitter;
+class ParticleFireEmitter;
 class PhysicsScene;
 //class PhysicsScene;
 
@@ -41,7 +41,7 @@ private:
 	TerrainGen* terrain;
 	RenderTargets* projection;
 	ImportOBJ* staff;
-	ParticleEmitter* m_emitter;
+	ParticleFireEmitter* m_emitter;
 	Project* proj;
 	vec3 lightsDirection;
 	vec3 lightColour;

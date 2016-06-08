@@ -11,6 +11,7 @@
 #include "TerrainGen.h"
 #include "Camera.h"
 #include "Window.h"
+#include "FluidParticles.h"
 
 using namespace physx;
 
@@ -75,6 +76,10 @@ void PhysicsScene::SetUpPhysx(float TerrainSize)
 	PxTransform baseline = PxTransform(PxVec3(0.0f, 0, 0.0f), PxQuat(PxHalfPi*1.0f, PxVec3(0.0f, 0.0f, 1.0f)));
 	PxRigidStatic* planeBase = PxCreateStatic(*m_physics, baseline, PxPlaneGeometry(), *m_physicsMaterial);
 	m_physicsScene->addActor(*planeBase);
+
+	fluidSystem = new FluidParticles;
+	fluidSystem->StartUp(this);
+
 }
 
 void PhysicsScene::DrawScene()
@@ -122,6 +127,7 @@ void PhysicsScene::Update(float a_deltaTime, Window* window)
 	{
 	}
 	m_playerController->Update(a_deltaTime, window);
+	fluidSystem->Update(a_deltaTime);
 }
 
 

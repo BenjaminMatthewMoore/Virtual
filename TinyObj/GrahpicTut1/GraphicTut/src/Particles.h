@@ -19,11 +19,11 @@ struct ParticleVertex
 	glm::vec4 colour;
 };
 
-class ParticleEmitter
+class ParticleFireEmitter
 {
 public:
-	ParticleEmitter();
-	~ParticleEmitter();
+	ParticleFireEmitter();
+	~ParticleFireEmitter();
 	
 	
 	

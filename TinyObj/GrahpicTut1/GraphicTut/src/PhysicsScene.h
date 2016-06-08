@@ -9,6 +9,7 @@ class PlayerController;
 class TerrainGen;
 class Camera;
 class Window;
+class FluidParticles;
 class PhysicsScene
 {
 public:
@@ -34,6 +35,7 @@ public:
 	physx::PxCooking* m_physicsCooker;
 	void AddWidget(physx::PxShape* shape, physx::PxRigidActor* actor, glm::vec4 geo_color);
 	
+	FluidParticles* fluidSystem;
 
 private:
 	

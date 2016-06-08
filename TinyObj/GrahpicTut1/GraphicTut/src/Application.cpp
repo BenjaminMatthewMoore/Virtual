@@ -152,7 +152,7 @@ void Application::Startup()
 	physicsScene->CreateHeightMap(*terrain);
 	projection = new RenderTargets;
 	staff = new ImportOBJ();
-	m_emitter = new ParticleEmitter();
+	m_emitter = new ParticleFireEmitter();
 	//ImportOBJ* dragon = new ImportOBJ;
 	m_emitter->initalise(1000, 500, 0.1f, 1.0f, 1, 5, 1, 0.1f, glm::vec4(1, 0, 0, 1), glm::vec4(1, 1, 0, 1));
 
@@ -170,6 +170,7 @@ void Application::Startup()
 
 void Application::Update()
 {
+	Gizmos::clear();
 	deltaTime = (float)glfwGetTime() - lastFrameTime;
 	physicsScene->Update(deltaTime, windowView);
 	lastFrameTime = (float)glfwGetTime();
@@ -207,7 +208,7 @@ void Application::Update()
 
 void Application::Draw()
 {
-	Gizmos::clear();
+	
 	camera->Update(deltaTime);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	projection->Draw(camera->GetProjectionView(), *terrain);
